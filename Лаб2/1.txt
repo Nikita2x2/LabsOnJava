@@ -1,0 +1,213 @@
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.InputMismatchException;
+import java.util.Scanner;
+/**
+ * @author Бабаскин Никита, гр.12002006 "1560213@bsu.edu.ru";
+ */
+
+/**
+ * Класс, создающий меню
+ */
+public class Main {
+    /**
+     * Метод, реализующий вывод нужного задания
+     */
+    public static void main(String[] args) throws IOException {
+        Scanner scanner = new Scanner(System.in);
+        int choice;
+        do {
+            System.out.println("Выберите задание:");
+            System.out.println("1. Вычислить значения выражения.");
+            System.out.println("2. Вычислить периметр и площадь прямоугольного треугольника.");
+            System.out.println("3. Возвести числа в квадрат или четвертую степень.");
+            System.out.println("4. Удвоить числа или заменить их абсолютными значениями.");
+            System.out.println("5. Выдать количество уроков.");
+            System.out.println("6. Найти сумму первой и последней цифр.");
+            System.out.println("7. Определить количество амеб.");
+            System.out.println("8. Вычислить произведение ряда.");
+            System.out.println("0. Выход.");
+
+            choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    System.out.println("Введите a, b и c:");
+                    double a = readDouble(scanner);
+                    double b = readDouble(scanner);
+                    double c = readDouble(scanner);
+                    double result1 = calculateExpression(a, b, c);
+                    System.out.println("Результат: " + result1);
+                    break;
+                case 2:
+                    System.out.println("Введите длины катетов:");
+                    double a1 = readDouble(scanner);
+                    double b1 = readDouble(scanner);
+                    double[] result2 = calculateTriangle(a1, b1);
+                    System.out.println("Периметр: " + result2[0] + ", Площадь: " + result2[1]);
+                    break;
+                case 3:
+                    System.out.println("Введите три числа:");
+                    int x = readInt(scanner);
+                    int y = readInt(scanner);
+                    int z = readInt(scanner);
+                    int[] result3 = powNumbers(x, y, z);
+                    for (int num : result3) {
+                        System.out.printf("%d ", num);
+                    }
+                    System.out.println();
+                    break;
+                case 4:
+                    System.out.println("Введите три числа:");
+                    double a2 = readDouble(scanner);
+                    double b2 = readDouble(scanner);
+                    double c2 = readDouble(scanner);
+                    double[] result4 = doubleOrAbsolute(a2, b2, c2);
+                    for (double num : result4) {
+                        System.out.printf("%.2f ", num);
+                    }
+                    System.out.println();
+                    break;
+                case 5:
+                    System.out.println("Введите номер дня недели:");
+                    int dayOfWeek = readInt(scanner);
+                    int numLessons = getNumberOfLessons(dayOfWeek);
+                    System.out.println("Количество уроков: " + numLessons);
+                    break;
+                case 6:
+                    System.out.println("Введите число:");
+                    int number = readInt(scanner);
+                    int sum = getSum(number);
+                    System.out.println("Сумма первой и последней цифр: " + sum);
+                    break;
+                case 7:
+                    System.out.println("Введите количество часов:");
+                    int hours = readInt(scanner);
+                    int numAmoebas = getNumAmoebas(hours);
+                    System.out.println("Количество амеб: " + numAmoebas);
+                    break;
+                case 8:
+                    System.out.println("Введите число:");
+                    int n = readInt(scanner);
+                    double product = calculateProduct(n);
+                    System.out.println("Произведение ряда: " + product);
+                    break;
+                case 0:
+                    System.out.println("Выход из программы.");
+                    break;
+                default:
+                    System.out.println("Неверный выбор. Попробуйте еще раз.");
+            }
+            System.out.println("===========");
+        } while (choice != 0);
+    }
+
+    private static int readInt(Scanner scanner) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader("D:\\Professional activity\\Study\\БелГУ\\3 курс\\6 семестр\\РППЯВУ\\Лаб2\\input.txt"));
+        String line = reader.readLine();
+        reader.close();
+        if (line != null && line.length() > 0) {
+            return Integer.parseInt(line);
+        } else {
+            System.out.print("Введите значение: ");
+            return scanner.nextInt();
+        }
+    }
+
+    private static double readDouble(Scanner scanner) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader("D:\\Professional activity\\Study\\БелГУ\\3 курс\\6 семестр\\РППЯВУ\\Лаб2\\input.txt"));
+        String line = reader.readLine();
+        reader.close();
+        if (line != null && line.length() > 0) {
+            return Double.parseDouble(line);
+        } else {
+            System.out.print("Введите значение: ");
+            return scanner.nextDouble();
+        }
+    }
+
+    private static double calculateExpression(double a, double b, double c) {
+        return (b + Math.sqrt(Math.pow(b, 2) + 4 * a * c)) / (2 * a) + Math.pow(a, 3) * c + Math.pow(b, -2);
+    }
+
+    private static double[] calculateTriangle(double a, double b) {
+        double c = Math.sqrt(a * a + b * b);
+        double perimeter = a + b + c;
+        double area = a * b / 2;
+        return new double[]{perimeter, area};
+    }
+
+    private static int[] powNumbers(int x, int y, int z) {
+        int[] result = new int[3];
+        if (x >= 0) {
+            result[0] = x * x;
+        } else {
+            result[0] = x * x * x * x;
+        }
+        if (y >= 0) {
+            result[1] = y * y;
+        } else {
+            result[1] = y * y * y * y;
+        }
+        if (z >= 0) {
+            result[2] = z * z;
+        } else {
+            result[2] = z * z * z * z;
+        }
+        return result;
+    }
+
+    private static double[] doubleOrAbsolute(double a, double b, double c) {
+        if (a < b && b < c) {
+            return new double[]{a * 2, b * 2, c * 2};
+        } else {
+            return new double[]{Math.abs(a), Math.abs(b), Math.abs(c)};
+        }
+    }
+
+    private static int getNumberOfLessons(int dayOfWeek) {
+        switch (dayOfWeek) {
+            case 1:
+            case 2:
+            case 4:
+                return 4;
+            case 3:
+            case 5:
+                return 5;
+            case 6:
+            case 7:
+                return 0;
+            default:
+                return -1;
+        }
+    }
+
+    private static int getSum(int number) {
+        String strNum = Integer.toString(number);
+        int sum = strNum.charAt(0) - '0';
+        sum += strNum.charAt(strNum.length() - 1) - '0';
+        return sum;
+    }
+
+    private static int getNumAmoebas(int hours) {
+        int numAmoebas = 1;
+        for (int i = 3; i <= hours; i += 3) {
+            numAmoebas *= 2;
+        }
+        return numAmoebas;
+    }
+
+    private static double calculateProduct(int n) {
+        double product = 1;
+        for (int i = 1; i <= n; i++) {
+            if (i % 2 == 0) {
+                product *= (double) (2 * i) / (2 * i + 1);
+            }
+        }
+        return product;
+    }
+}
