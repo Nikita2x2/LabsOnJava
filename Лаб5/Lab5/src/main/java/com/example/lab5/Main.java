@@ -1,12 +1,22 @@
 package com.example.lab5;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Программа считывающая
+ * @autor Бабаскин Никита
+ */
+
+/**
+ * Класс, который реализует интерфейс Runnable. Он содержит единственный конструктор Task(int n) для задания номера файла
+ */
 class Task implements Runnable {
     private int n;
     private LinkedHashMap<Integer, Double> resultMap;
@@ -15,7 +25,11 @@ class Task implements Runnable {
         this.n = n;
         this.resultMap = resultMap;
     }
-
+    /**
+     * Метод, который будет выполняться в потоке
+     * Он считывает данные из файла в формате, заданном в условии задачи, и выполняет над ними заданные операции
+     * Результат записывается в выходной файл out.dat
+     */
     @Override
     public void run() {
         try {
@@ -52,13 +66,32 @@ class Task implements Runnable {
 
             synchronized (resultMap) {
                 resultMap.put(n, result);
+                writeResultToFile(result);
             }
         } catch (IOException e) {
             System.out.println(String.format("Error while processing file in_%d.dat: %s", n, e.getMessage()));
         }
     }
+    /**
+     * Метод для записи результата в файл out.dat
+     */
+    private void writeResultToFile(double result) throws IOException {
+        synchronized (Main.class) {
+            File outFile = new File("out.dat");
+            FileWriter fw = new FileWriter(outFile, true);
+            PrintWriter pw = new PrintWriter(fw);
+            pw.println(result);
+            pw.close();
+        }
+    }
 }
-
+/**
+ * Класс, создающий список потоков, соответствующих задачам
+ * Каждому потоку соответствует свой экземпляр класса Task
+ * Затем потоки запускаются методом start()
+ * После этого вызывается метод join() для каждого потока, чтобы дождаться, пока все потоки завершат свою работу
+ * Это необходимо для того, чтобы гарантировать корректное завершение программы.
+ */
 public class Main {
     public static void main(String[] args) throws InterruptedException {
         List<Thread> threadList = new ArrayList<>();
@@ -79,4 +112,3 @@ public class Main {
         System.out.println("Сумма результатов: " + sum);
     }
 }
-
